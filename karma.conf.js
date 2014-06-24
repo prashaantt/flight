@@ -11,26 +11,24 @@ module.exports = function (config) {
     basePath: '',
 
     frameworks: [
-      'jasmine'
+      'jasmine',
+      'commonjs'
     ],
+
+    preprocessors: {
+      'index.js': ['commonjs'],
+      'lib/**/*.js': ['commonjs'],
+      'test/**/*.js': ['commonjs']
+    },
 
     // list of files / patterns to load in the browser
     files: [
       // loaded without require
-      'bower_components/es5-shim/es5-shim.js',
-      'bower_components/es5-shim/es5-sham.js',
       'bower_components/jquery/dist/jquery.js',
       'build/flight.js',
-
-      // hack to load RequireJS after the shim libs
-      'node_modules/karma-requirejs/lib/require.js',
-      'node_modules/karma-requirejs/lib/adapter.js',
-
-      // loaded with require
-      {pattern: 'lib/**/*.js', included: false},
-      {pattern: 'test/spec/**/*_spec.js', included: false},
-
-      'test/test-main.js'
+      'index.js',
+      'lib/**/*.js',
+      'test/spec/**/*_spec.js'
     ],
 
     // list of files to exclude
@@ -69,7 +67,7 @@ module.exports = function (config) {
 
     plugins: [
       'karma-jasmine',
-      'karma-requirejs',
+      'karma-commonjs',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-ie-launcher',
