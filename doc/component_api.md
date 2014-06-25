@@ -19,51 +19,34 @@ property.
 other components via events.
 
 <a name="defineComponent"></a>
-## defineComponent(...)
+## flight.component(...)
 
-Flight expects its client apps to support
-[AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)-style module definitions.
-
-To define a Component, create a module that depends on Flight's component
-module (`lib/component`). This module exports a function which we'll call
-`defineComponent` by convention.
-
-```js
-define(function(require) {
-  var defineComponent = require('flight/lib/component');
-
-  // ...
-});
-```
-
-`defineComponent` accepts any number of [mixin](mixin_api.md) functions and returns
+`flight.component` accepts any number of [mixin](mixin_api.md) functions and returns
 a new Component constructor with those mixins applied to its prototype.
 
 Each Component definition should include a function declaration describing its
 basic behavior (we can think of this function as the Component's core mixin).
-By passing this function to `defineComponent` we can define a simple
+By passing this function to `flight.component` we can define a simple
 Component:
 
 ```js
 /* my_simple_component.js */
 
-define(function(require) {
-  var defineComponent = require('flight/lib/component');
-  var withMyMixin = require('with_my_mixin');
+var flight = require('flight');
+var withMyMixin = require('with_my_mixin');
 
-  return defineComponent(mySimpleComponent, withMyMixin);
+module.exports = flight.component(mySimpleComponent, withMyMixin);
 
-  // this Component's custom properties
-  function mySimpleComponent() {
-    this.doSomething = function() {
-      //...
-    };
+// this Component's custom properties
+function mySimpleComponent() {
+  this.doSomething = function() {
+    //...
+  };
 
-    this.doSomethingElse = function() {
-      //...
-    };
-  }
-});
+  this.doSomethingElse = function() {
+    //...
+  };
+}
 ```
 
 Components make no assumptions about the existence of other objects. If you
@@ -71,27 +54,25 @@ were to remove all other JavaScript on the site, this Component would still
 work as intended.
 
 <a name="defineComponent.teardownAll"></a>
-## defineComponent.teardownAll()
+## flight.component.teardownAll()
 
-On `defineComponent` (i.e., the object exported by `lib/component`) this
+On `flight.component` (i.e., the object exported by `lib/component`) this
 method deletes every instance of every Component and all their event
 bindings.
 
 ```js
-define(function(require) {
-  var defineComponent = require('flight/lib/component');
+var flight = require('flight');
 
-  return defineComponent(navigationMenu);
+module.exports = flight.component(navigationMenu);
 
-  function navigationMenu() {
-    this.resetEverything = function() {
-      // remove every component instance and all event listeners
-      defineComponent.teardownAll();
-    };
+function navigationMenu() {
+  this.resetEverything = function() {
+    // remove every component instance and all event listeners
+    flight.component.teardownAll();
+  };
 
-    // ...
-  }
-});
+  // ...
+}
 ```
 
 <a name="Component.attachTo"></a>
@@ -118,13 +99,11 @@ couple of selectors which will override the values defined in the Component's
 ```js
 /* attach an inbox component to a node with id 'inbox'*/
 
-define(function(require) {
-  var Inbox = require('components/inbox');
+var Inbox = require('components/inbox');
 
-  Inbox.attachTo('#inbox', {
-    'nextPageSelector': '#nextPage',
-    'previousPageSelector': '#previousPage',
-  });
+Inbox.attachTo('#inbox', {
+  'nextPageSelector': '#nextPage',
+  'previousPageSelector': '#previousPage',
 });
 ```
 
@@ -138,13 +117,13 @@ Once attached, Component instances have direct access to their node object via
 the `node` property. (There's also a jQuery version of the node available via
 the `$node` property.)
 
-```
+```js
 this.setId = function(n) {
-    this.node.id = n;
+  this.node.id = n;
 };
 
 this.hideComponent = function() {
-    this.$node.hide();
+  this.$node.hide();
 };
 ```
 
@@ -155,11 +134,9 @@ On a Component constructor this method deletes every instance of that Component
 type and all their event bindings.
 
 ```js
-define(function(require) {
-  var NavigationMenu = require('ui/navigationMenu');
+var NavigationMenu = require('ui/navigationMenu');
 
-  // ...
-  // remove all instances of NavigationMenu and all their event bindings
-  NavigationMenu.teardownAll();
-});
+// ...
+// remove all instances of NavigationMenu and all their event bindings
+NavigationMenu.teardownAll();
 ```

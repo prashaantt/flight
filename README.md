@@ -68,22 +68,18 @@ yo flight-package foo
 ## Installation
 
 If you prefer not to use the Flight generators, it's highly recommended that
-you install Flight as an AMD package (including all the correct dependencies).
-This is best done with [Bower](http://bower.io/), a package manager for the web.
+you install Flight as a module. This is best done using a package manager:
+[npm](https://www.npmjs.org/) or [Bower](http://bower.io/).
 
 ```
-npm install -g bower
-bower install --save flight
+npm install flightjs
+bower install flight
 ```
 
-You will have to reference [jQuery](http://jquery.com) and use an AMD module loader like
-[Require.js](http://requirejs.org/) or [Loadrunner](https://github.com/danwrong/loadrunner).
+You will have to reference [jQuery](http://jquery.com) and use a CommonJS build
+tool like Browserify, [Require.js](http://requirejs.org/), or
+[Loadrunner](https://github.com/danwrong/loadrunner).
 
-```html
-<script src="bower_components/jquery/dist/jquery.js"></script>
-<script data-main="main.js" src="bower_components/requirejs/require.js"></script>
-...
-```
 
 ## Standalone version
 
@@ -118,41 +114,37 @@ documentation](doc) for a comprehensive overview.
 A simple example of how to write and use a Flight component.
 
 ```js
-define(function (require) {
-  var defineComponent = require('flight/lib/component');
+var flight = require('flight');
 
-  // define the component
-  return defineComponent(inbox);
+// export the component
+module.exports = flight.component(inbox);
 
-  function inbox() {
-    // define custom functions here
-    this.doSomething = function() {
-      //...
-    }
-
-    this.doSomethingElse = function() {
-      //...
-    }
-
-    // now initialize the component
-    this.after('initialize', function() {
-      this.on('click', this.doSomething);
-      this.on('mouseover', this.doSomethingElse);
-    });
+function inbox() {
+  // define custom functions here
+  this.doSomething = function() {
+    //...
   }
-});
+
+  this.doSomethingElse = function() {
+    //...
+  }
+
+  // now initialize the component
+  this.after('initialize', function() {
+    this.on('click', this.doSomething);
+    this.on('mouseover', this.doSomethingElse);
+  });
+}
 ```
 
 ```js
 /* attach an inbox component to a node with id 'inbox' */
 
-define(function (require) {
-  var Inbox = require('inbox');
+var Inbox = require('inbox');
 
-  Inbox.attachTo('#inbox', {
-    'nextPageSelector': '#nextPage',
-    'previousPageSelector': '#previousPage',
-  });
+Inbox.attachTo('#inbox', {
+  'nextPageSelector': '#nextPage',
+  'previousPageSelector': '#previousPage',
 });
 ```
 

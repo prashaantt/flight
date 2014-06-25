@@ -23,15 +23,11 @@ The name of the existing function (`existingFunc`) you want to augment.
 The function to be invoked before `existingFunc`.
 
 ```js
-define(function() {
-  function withDrama() {
-    this.before('announce', function() {
-      clearThroat();
-    });
-  }
-
-  return withDrama;
-});
+function withDrama() {
+  this.before('announce', function() {
+    clearThroat();
+  });
+}
 ```
 
 <a name="this.after"></a>
@@ -48,15 +44,11 @@ The name of the existing function (`existingFunc`) you want to augment.
 The function to be invoked after `existingFunc`.
 
 ```js
-define(function() {
-  function withDrama() {
-    this.after('leaving', function() {
-      slamDoor();
-    });
-  }
-
-  return withDrama;
-});
+function withDrama() {
+  this.after('leaving', function() {
+    slamDoor();
+  });
+}
 ```
 
 <a name="this.around"></a>
@@ -79,17 +71,13 @@ it can be referenced. If the custom function does not call the existing
 function then it will replace that function instead of surrounding it:
 
 ```js
-define(function() {
-  function withDrama() {
-    this.around('announce', function(basicAnnounce) {
-      clearThroat();
-      basicAnnounce();
-      bow();
-    });
-  }
-
-  return withDrama;
-});
+function withDrama() {
+  this.around('announce', function(basicAnnounce) {
+    clearThroat();
+    basicAnnounce();
+    bow();
+  });
+}
 ```
 
 <a name="advice.withAdvice"></a>
@@ -99,28 +87,22 @@ Advice can be mixed in to non-components using the compose module:
 
 ```js
 // a simple module: 'test/myObj'
-define(function() {
-  var myObj = {
-    print: function() {
-      console.log("hello");
-    }
-  };
+var myObj = {
+  print: function() {
+    console.log("hello");
+  }
+};
+```
 
-  return myObj;
-});
+```js
+var flight = require('flight');
+var myObj = require('test/myObj');
 
-// import myObj and augment it
-define(function(require) {
-  var advice = require('flight/lib/advice');
-  var compose = require('flight/lib/compose');
-  var myObj = require('test/myObj');
+// add advice functions to myObj
+flight.compose.mixin(myObj, [flight.advice.withAdvice]);
 
-  // add advice functions to myObj
-  compose.mixin(myObj, [advice.withAdvice]);
-
-  // augment print function
-  myObj.after('print', function() {
-    console.log("world");
-  });
+// augment print function
+myObj.after('print', function() {
+  console.log("world");
 });
 ```
